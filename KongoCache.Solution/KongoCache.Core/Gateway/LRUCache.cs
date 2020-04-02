@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using KongoCache.Core.Interface;
+using System.Collections.Generic;
 
 namespace KongoCache.Core.Gateway
 {
-    public class LRUCache<K, V>
+    public class LRUCache<K, V> : ILRUCache<K, V>
     {
         IDictionary<K, LinkedListNode<(K, V)>> _hashTable;
         LinkedList<(K, V)> _keyList;

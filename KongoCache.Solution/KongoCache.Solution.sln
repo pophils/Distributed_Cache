@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KongoCache.Core", "KongoCache.Core\KongoCache.Core.csproj", "{9438B63D-1C47-415D-A595-C2333234FFE5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KongoCache.Core", "KongoCache.Core\KongoCache.Core.csproj", "{9438B63D-1C47-415D-A595-C2333234FFE5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KongoCache.CacheGateway", "KongoCache.CacheGateway\KongoCache.CacheGateway.csproj", "{4C4B0586-B607-45D2-9A94-76C3E3D0F75D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KongoCache.Worker", "KongoCache.Worker\KongoCache.Worker.csproj", "{542084CF-7192-4A3C-AB46-830BEDA0CE16}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{9438B63D-1C47-415D-A595-C2333234FFE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9438B63D-1C47-415D-A595-C2333234FFE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9438B63D-1C47-415D-A595-C2333234FFE5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C4B0586-B607-45D2-9A94-76C3E3D0F75D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C4B0586-B607-45D2-9A94-76C3E3D0F75D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C4B0586-B607-45D2-9A94-76C3E3D0F75D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C4B0586-B607-45D2-9A94-76C3E3D0F75D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{542084CF-7192-4A3C-AB46-830BEDA0CE16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{542084CF-7192-4A3C-AB46-830BEDA0CE16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{542084CF-7192-4A3C-AB46-830BEDA0CE16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{542084CF-7192-4A3C-AB46-830BEDA0CE16}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

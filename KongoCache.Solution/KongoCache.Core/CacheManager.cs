@@ -1,5 +1,6 @@
 ﻿using KongoCache.Core.DTOs;
 using KongoCache.Core.Gateway;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 
@@ -7,23 +8,49 @@ namespace KongoCache.Core
 {
     public class CacheManager<K, V> : ICacheManager<K, V>
     {
-        ConcurrentQueue<CacheOpMetaData<K, V>> _opsQueue;
+        ConcurrentQueue<CacheOpMetaData> _opsQueue;
         LRUCache<K, V> _lruRamGateway;
-        Queue<CacheOpMetaData<K, V>> _completedOpsQueue;
+        Queue<CacheOpMetaData> _completedOpsQueue;
+        IDictionary<Guid, string> resultMap;
 
-        public void EnqueueOps(CacheOpMetaData<K, V> op)
+
+        public void PutResult(string resultContent, Guid sessionId)
+        {
+            if (resultMap is null)
+                resultMap = new Dictionary<Guid, string>();
+
+            resultMap[sessionId] = resultContent; 
+        }
+
+        public bool TryGetResult(Guid sessionId, out string result)
+        {
+            result = default;
+
+            if (resultMap is null)
+                return false;
+
+            if (resultMap.TryGetValue(sessionId, out result))
+            {
+                resultMap.Remove(sessionId);
+                return true;
+            }
+
+            return false;
+        }
+        
+        public void EnqueueOps(CacheOpMetaData op)
         {
             if (_opsQueue is null)
-                _opsQueue = new ConcurrentQueue<CacheOpMetaData<K, V>>();
+                _opsQueue = new ConcurrentQueue<CacheOpMetaData>();
 
             _opsQueue.Enqueue(op);
         }
 
-        public CacheOpMetaData<K, V> DequeueOps()
+        public CacheOpMetaData DequeueOps()
         {
             if (_opsQueue != null && !_opsQueue.IsEmpty)
             {
-                if (_opsQueue.TryDequeue(out CacheOpMetaData<K, V> op))
+                if (_opsQueue.TryDequeue(out CacheOpMetaData op))
                 {
                     return op;
                 }
@@ -43,19 +70,19 @@ namespace KongoCache.Core
             }
         }
 
-        public void EnqueueCompletedOps(CacheOpMetaData<K, V> op)
+        public void EnqueueCompletedOps(CacheOpMetaData op)
         {
             if (_completedOpsQueue is null)
-                _completedOpsQueue = new Queue<CacheOpMetaData<K, V>>();
+                _completedOpsQueue = new Queue<CacheOpMetaData>();
 
             _completedOpsQueue.Enqueue(op);
         }
 
-        public CacheOpMetaData<K, V> DequeueCompletedOps()
+        public CacheOpMetaData DequeueCompletedOps()
         {
             if (_completedOpsQueue != null && _completedOpsQueue.Count > 0)
             {
-                if (_completedOpsQueue.TryDequeue(out CacheOpMetaData<K, V> op))
+                if (_completedOpsQueue.TryDequeue(out CacheOpMetaData op))
                 {
                     return op;
                 }
