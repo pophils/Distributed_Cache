@@ -4,11 +4,10 @@ namespace KongoCache.Core.DTOs
 {
     public class CacheOpMetaData
     {
-        public string key;
+        public string KongoKey;
         public string Value;
-        public CacheContentType cacheContentType;
-        public OpType opType;
-        public Guid sessionId;
-
+        public CacheContentType KongoContentType;
+        public OpType KongoOpType;
+        public Guid ClientSessionId;
     }
 }

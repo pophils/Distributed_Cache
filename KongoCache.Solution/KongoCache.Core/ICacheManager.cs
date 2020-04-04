@@ -1,8 +1,6 @@
 ﻿using KongoCache.Core.DTOs;
-using KongoCache.Core.Gateway;
+using KongoCache.Core.Interface;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace KongoCache.Core
 {
@@ -12,7 +10,9 @@ namespace KongoCache.Core
         CacheOpMetaData DequeueOps();
         void EnqueueCompletedOps(CacheOpMetaData op);
         CacheOpMetaData DequeueCompletedOps();
-        void PutResult(string resultContent, Guid sessionId);
-        bool TryGetResult(Guid sessionId, out string result);
+        void AddReply(string replyContent, Guid clientSessionId);
+        bool TryGetReply(Guid clientSessionId, out string replyContent);
+        bool RepliesEmpty(Guid clientSessionId);
+        ILRUDatabase<K, V> LRUDatabase();
     }
 }

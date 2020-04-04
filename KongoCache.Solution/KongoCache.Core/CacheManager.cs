@@ -1,5 +1,6 @@
 ﻿using KongoCache.Core.DTOs;
 using KongoCache.Core.Gateway;
+using KongoCache.Core.Interface;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -9,35 +10,51 @@ namespace KongoCache.Core
     public class CacheManager<K, V> : ICacheManager<K, V>
     {
         ConcurrentQueue<CacheOpMetaData> _opsQueue;
-        LRUCache<K, V> _lruRamGateway;
+        ILRUDatabase<K, V> _database;
         Queue<CacheOpMetaData> _completedOpsQueue;
-        IDictionary<Guid, string> resultMap;
+        IDictionary<Guid, LinkedList<string>> replyMap;
 
-
-        public void PutResult(string resultContent, Guid sessionId)
+        public void AddReply(string replyContent, Guid clientSessionId)
         {
-            if (resultMap is null)
-                resultMap = new Dictionary<Guid, string>();
+            if (replyMap is null)
+                replyMap = new Dictionary<Guid, LinkedList<string>>();
 
-            resultMap[sessionId] = resultContent; 
+            if (replyMap[clientSessionId] is null)
+                replyMap[clientSessionId] = new LinkedList<string>();
+
+            replyMap[clientSessionId].AddLast(replyContent); 
         }
 
-        public bool TryGetResult(Guid sessionId, out string result)
+        public bool TryGetReply(Guid clientSessionId, out string reply)
         {
-            result = default;
+            reply = default;
 
-            if (resultMap is null)
+            if (replyMap is null)
                 return false;
 
-            if (resultMap.TryGetValue(sessionId, out result))
+            if (replyMap.TryGetValue(clientSessionId, out LinkedList<string> replies))
             {
-                resultMap.Remove(sessionId);
+                reply = replies.First.Value;
+                replies.RemoveFirst(); 
                 return true;
             }
 
             return false;
         }
-        
+
+        public bool RepliesEmpty(Guid clientSessionId)
+        { 
+            if (replyMap is null)
+                return false;
+
+            if (replyMap.TryGetValue(clientSessionId, out LinkedList<string> replies))
+            {
+                return replies.Count == 0;
+            }
+
+            return true;
+        }
+
         public void EnqueueOps(CacheOpMetaData op)
         {
             if (_opsQueue is null)
@@ -59,17 +76,6 @@ namespace KongoCache.Core
             return default;
         }
 
-        public LRUCache<K, V> LRURamGateway
-        {
-            get 
-            {
-                if (_lruRamGateway is null)
-                    _lruRamGateway = new LRUCache<K, V>();
-
-                return _lruRamGateway;            
-            }
-        }
-
         public void EnqueueCompletedOps(CacheOpMetaData op)
         {
             if (_completedOpsQueue is null)
@@ -89,6 +95,14 @@ namespace KongoCache.Core
             }
 
             return default;
-        }                     
+        }
+
+        public ILRUDatabase<K, V> LRUDatabase()
+        {
+            if (_database is null)
+                _database = new LRUDatabase<K, V>();
+
+            return _database;
+        }
     }
 }

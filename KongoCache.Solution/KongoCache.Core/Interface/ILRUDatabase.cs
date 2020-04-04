@@ -1,6 +1,6 @@
 ﻿namespace KongoCache.Core.Interface
 {
-    public interface ILRUCache<K, V> 
+    public interface ILRUDatabase<K, V> 
     {
         public void Insert(K key, V value);
 

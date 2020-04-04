@@ -79,6 +79,6 @@ namespace KongoCache.Worker
         { 
             _logger.LogError($"Kongo session with Id {Id} caught an error with code {error}");
 
-        }
+        } 
     }
 }

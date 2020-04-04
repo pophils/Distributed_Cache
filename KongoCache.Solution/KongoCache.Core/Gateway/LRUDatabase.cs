@@ -1,17 +1,19 @@
 ﻿using KongoCache.Core.Interface;
+using System;
 using System.Collections.Generic;
 
 namespace KongoCache.Core.Gateway
 {
-    public class LRUCache<K, V> : ILRUCache<K, V>
+
+    public class LRUDatabase<K, V> : ILRUDatabase<K, V>
     {
         IDictionary<K, LinkedListNode<(K, V)>> _hashTable;
         LinkedList<(K, V)> _keyList;
 
-        long _capacity = long.MaxValue; // just for testing
+        long _capacity = (long)Math.Pow(2, 64); // just for testing
         long _size = 0;
 
-        public LRUCache(){} 
+        public LRUDatabase(){} 
 
         public void Insert(K key, V value)
         {

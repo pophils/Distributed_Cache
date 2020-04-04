@@ -1,9 +1,10 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using KongoCache.Core;
+using KongoCache.Core.DTOs;
 using Microsoft.Extensions.DependencyInjection; 
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -17,9 +18,18 @@ namespace KongoCache.Worker
         KongoServer _kongoServer;
         private bool serverRunning;
 
+        CacheRequestProcessor requestProcessor;
+
         readonly ICacheManager<string, string> _textCacheManager;
         readonly ICacheManager<string, Dictionary<string, string>> _hashMapCacheManager;
         readonly ICacheManager<string, HashSet<string>> _setCacheManager;
+        readonly ICacheManager<string, List<string>> _arrayListCacheManager;
+        readonly ICacheManager<string, SortedSet<string>> _sortedSetCacheManager;
+        readonly ICacheManager<string, LinkedList<string>> _linkedListCacheManager;
+        readonly ICacheManager<string, BinaryHeap<(int score, string value)>> _minHeapCacheManager;
+        readonly ICacheManager<string, BinaryHeap<(int score, string value)>> _maxHeapCacheManager;
+
+
 
         public Worker(ILogger<Worker> logger, IServiceScopeFactory serviceScopeFactory)
         {
@@ -66,6 +76,8 @@ namespace KongoCache.Worker
                 _logger.LogDebug("Kongo server starting...");
                 _kongoServer.Start();
                 _logger.LogDebug("Kongo server started...");
+
+                InitRequestsProcessor();
             }
             catch(Exception ex)
             {
@@ -88,6 +100,15 @@ namespace KongoCache.Worker
             }
         }
 
-       
+        void InitRequestsProcessor()
+        {
+            if (requestProcessor is null)
+                requestProcessor = new CacheRequestProcessor();
+
+            requestProcessor.InitTextRequestProcessor(_textCacheManager);
+
+        }
+          
+
     }
 }
