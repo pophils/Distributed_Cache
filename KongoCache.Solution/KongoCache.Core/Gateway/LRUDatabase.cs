@@ -15,16 +15,16 @@ namespace KongoCache.Core.Gateway
 
         public LRUDatabase(){} 
 
-        public void Insert(K key, V value)
+        public void Insert(K kongokey, V value)
         {
             EnsureInternalStoreIsReadyForStorage();
 
-            if (_hashTable.ContainsKey(key))
-                _keyList.Remove(_hashTable[key]);
+            if (_hashTable.ContainsKey(kongokey))
+                _keyList.Remove(_hashTable[kongokey]);
 
             if (_size < _capacity)
             {
-                _hashTable[key] = _keyList.AddFirst((key, value));
+                _hashTable[kongokey] = _keyList.AddFirst((kongokey, value));
                 _size++;
                 return;
             }
@@ -32,29 +32,29 @@ namespace KongoCache.Core.Gateway
             _hashTable.Remove(_keyList.Last.Value.Item1);
             _keyList.RemoveLast();
 
-            _hashTable[key] = _keyList.AddFirst((key, value));
+            _hashTable[kongokey] = _keyList.AddFirst((kongokey, value));
         }
         
-        public void Remove(K key)
+        public void Remove(K kongokey)
         {
             if (_hashTable is null || _keyList is null)
                 return;
             
-            if (_hashTable.ContainsKey(key))
+            if (_hashTable.ContainsKey(kongokey))
             {
-                _keyList.Remove(_hashTable[key]);
-                _hashTable.Remove(key);
+                _keyList.Remove(_hashTable[kongokey]);
+                _hashTable.Remove(kongokey);
             }             
         }
 
-        public V Get(K key)
+        public V Get(K kongokey)
         {
             if (_hashTable is null || _keyList is null)
                 return default;
 
-            if (_hashTable.ContainsKey(key))
+            if (_hashTable.ContainsKey(kongokey))
             {
-                LinkedListNode<(K, V)> node = _hashTable[key];
+                LinkedListNode<(K, V)> node = _hashTable[kongokey];
                 _keyList.Remove(node);
                 _keyList.AddFirst(node);
 

@@ -7,7 +7,6 @@ namespace KongoCache.Core
 {
     public class CacheRequestProcessor
     {
-        CacheOpMetaData textOpMetadata; 
         CacheOpMetaData hashTableOpMetadata;
 
         readonly ICacheManager<string, HashSet<string>> _setCacheManager;
@@ -17,7 +16,6 @@ namespace KongoCache.Core
         readonly ICacheManager<string, BinaryHeap<(int score, string value)>> _minHeapCacheManager;
         readonly ICacheManager<string, BinaryHeap<(int score, string value)>> _maxHeapCacheManager;
 
-        Task textProcessorTask;
         Task hashTableProcessorTask;
 
 

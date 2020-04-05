@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using KongoCache.Core;
 using KongoCache.Core.DTOs;
+using KongoCache.Core.RequestProcessor;
 using Microsoft.Extensions.DependencyInjection; 
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -18,7 +19,8 @@ namespace KongoCache.Worker
         KongoServer _kongoServer;
         private bool serverRunning;
 
-        CacheRequestProcessor requestProcessor;
+        HashTableRequestProcessor _hashMapRequestProcessor;
+        TextRequestProcessor _textRequestProcessor;
 
         readonly ICacheManager<string, string> _textCacheManager;
         readonly ICacheManager<string, Dictionary<string, string>> _hashMapCacheManager;
@@ -67,6 +69,9 @@ namespace KongoCache.Worker
             try
             {                 
                 serverRunning = true;
+
+                InitRequestProcessors();
+
                 int port = 65332;
 
                 _logger.LogDebug($"Init Kongo server with port: {port}"); 
@@ -77,12 +82,12 @@ namespace KongoCache.Worker
                 _kongoServer.Start();
                 _logger.LogDebug("Kongo server started...");
 
-                InitRequestsProcessor();
             }
             catch(Exception ex)
             {
                 _logger.LogError($"Kongo server could not be started due to {ex.Message}");
                 serverRunning = false;
+                DisposeRequestProcessors();
             } 
         }
 
@@ -93,6 +98,8 @@ namespace KongoCache.Worker
                 _logger.LogDebug("Kongo server stopping...");
                 _kongoServer.Stop();
                 _logger.LogDebug("Kongo server stopped...");
+
+                DisposeRequestProcessors();
             }
             catch (Exception ex)
             {
@@ -100,15 +107,30 @@ namespace KongoCache.Worker
             }
         }
 
-        void InitRequestsProcessor()
+        void InitRequestProcessors()
         {
-            if (requestProcessor is null)
-                requestProcessor = new CacheRequestProcessor();
+            if (_textRequestProcessor is null)
+                _textRequestProcessor = new TextRequestProcessor();
 
-            requestProcessor.InitTextRequestProcessor(_textCacheManager);
+            _textRequestProcessor.InitRequestProcessor(_textCacheManager);
 
+
+            if (_hashMapRequestProcessor is null)
+                _hashMapRequestProcessor = new HashTableRequestProcessor();
+
+            _hashMapRequestProcessor.InitRequestProcessor(_hashMapCacheManager);
         }
-          
+
+
+        void DisposeRequestProcessors()
+        {
+            _textRequestProcessor?.Dispose();
+            _hashMapRequestProcessor?.Dispose();
+
+            _textRequestProcessor = default;
+            _hashMapRequestProcessor = default;
+        }
+
 
     }
 }

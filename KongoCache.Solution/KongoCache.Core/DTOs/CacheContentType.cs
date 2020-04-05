@@ -5,10 +5,9 @@
         Text = 1,
         HashTable = 2,
         HashSet = 3,
-        ArrayList = 4,
-        SortedSet = 5,
-        LinkedList = 6,
-        MaxHeap = 7,
-        MinHeap = 8
+        ArrayList = 4, 
+        LinkedList = 5,
+        MaxHeap = 6,
+        MinHeap = 7
     }
 }

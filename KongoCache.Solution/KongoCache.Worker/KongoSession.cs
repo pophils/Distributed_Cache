@@ -39,38 +39,23 @@ namespace KongoCache.Worker
 
         protected override void OnReceived(byte[] buffer, long offset, long size)
         {
-            string message = Encoding.UTF8.GetString(buffer, (int)offset, (int)size); 
+            string message = Encoding.UTF8.GetString(buffer, (int)offset, (int)size);
+
+            if (string.IsNullOrEmpty(message))
+            {
+                SendAsync("Invalid request");
+                Disconnect();
+            }
+
             _logger.LogDebug($"Kongo session with Id {Id} received a message {message}");
 
-            CacheOpMetaData ops = JsonConvert.DeserializeObject<CacheOpMetaData>(message);
-            string result;
-            switch (ops.cacheContentType)
+            OpType opType = MessageParser.GetOpType(message);
+
+            if(opType == OpType.INVALID)
             {
-                case CacheContentType.Text:
-                    _textCacheManager.EnqueueOps(ops);
-
-                    while (!_textCacheManager.TryGetResult(Id, out result))
-                    {}
-                    SendAsync(result);
-                    
-                    break;
-                case CacheContentType.HashTable:
-                    _hashMapCacheManager.EnqueueOps(ops);
-
-                    while (!_hashMapCacheManager.TryGetResult(Id, out result))
-                    { }
-                    SendAsync(result);
-
-                    break;
-                case CacheContentType.Set:
-                    _setCacheManager.EnqueueOps(ops);
-
-                    while (!_setCacheManager.TryGetResult(Id, out result))
-                    { }
-                    SendAsync(result);
-
-                    break;
-            }
+                SendAsync("Invalid operation");
+                Disconnect();
+            } 
 
             Disconnect(); 
         }

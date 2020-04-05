@@ -2,10 +2,11 @@
 {
     public interface ILRUDatabase<K, V> 
     {
-        public void Insert(K key, V value);
+        public void Insert(K kongokey, V value);
 
-        public void Remove(K key);
+        public void Remove(K kongokey);
 
-        public V Get(K key);
+        public V Get(K kongokey); 
+
     }
 }
