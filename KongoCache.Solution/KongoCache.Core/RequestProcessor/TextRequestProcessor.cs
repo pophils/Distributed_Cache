@@ -41,9 +41,9 @@ namespace KongoCache.Core.RequestProcessor
                                     textOpMetadata.ClientSessionId);
                                 break;
 
-                            case OpType.DELETE:
+                            case OpType.REMOVE:
                                 _textCacheManager.LRUDatabase().Remove(textOpMetadata.KongoKey);
-                                _textCacheManager.AddReply(OpsResponseCode.SUCCESS + OpType.DELETE, textOpMetadata.ClientSessionId);
+                                _textCacheManager.AddReply(OpsResponseCode.SUCCESS + OpType.REMOVE, textOpMetadata.ClientSessionId);
                                 _textCacheManager.EnqueueCompletedOps(textOpMetadata);
                                 break;
                         }

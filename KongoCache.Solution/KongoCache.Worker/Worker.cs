@@ -4,9 +4,8 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using KongoCache.Core;
-using KongoCache.Core.DTOs;
 using KongoCache.Core.RequestProcessor;
-using Microsoft.Extensions.DependencyInjection; 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
@@ -24,12 +23,12 @@ namespace KongoCache.Worker
 
         readonly ICacheManager<string, string> _textCacheManager;
         readonly ICacheManager<string, Dictionary<string, string>> _hashMapCacheManager;
-        readonly ICacheManager<string, HashSet<string>> _setCacheManager;
-        readonly ICacheManager<string, List<string>> _arrayListCacheManager;
-        readonly ICacheManager<string, SortedSet<string>> _sortedSetCacheManager;
-        readonly ICacheManager<string, LinkedList<string>> _linkedListCacheManager;
-        readonly ICacheManager<string, BinaryHeap<(int score, string value)>> _minHeapCacheManager;
-        readonly ICacheManager<string, BinaryHeap<(int score, string value)>> _maxHeapCacheManager;
+        //readonly ICacheManager<string, HashSet<string>> _setCacheManager;
+        //readonly ICacheManager<string, List<string>> _arrayListCacheManager;
+        //readonly ICacheManager<string, SortedSet<string>> _sortedSetCacheManager;
+        //readonly ICacheManager<string, LinkedList<string>> _linkedListCacheManager;
+        //readonly ICacheManager<string, BinaryHeap<(int score, string value)>> _minHeapCacheManager;
+        //readonly ICacheManager<string, BinaryHeap<(int score, string value)>> _maxHeapCacheManager;
 
 
 
@@ -41,8 +40,7 @@ namespace KongoCache.Worker
             using var scope = _serviceScopeFactory.CreateScope();
 
             _textCacheManager = scope.ServiceProvider.GetRequiredService<ICacheManager<string, string>>();
-            _hashMapCacheManager = scope.ServiceProvider.GetRequiredService<ICacheManager<string, Dictionary<string, string>>>();
-            _setCacheManager = scope.ServiceProvider.GetRequiredService<ICacheManager<string, HashSet<string>>>();
+            _hashMapCacheManager = scope.ServiceProvider.GetRequiredService<ICacheManager<string, Dictionary<string, string>>>(); 
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -72,18 +70,20 @@ namespace KongoCache.Worker
 
                 InitRequestProcessors();
 
-                int port = 65332;
+                int port = 65332; // make configurable
 
-                _logger.LogDebug($"Init Kongo server with port: {port}"); 
+                _logger.LogInformation($"Init Kongo server..."); 
                 _kongoServer = new KongoServer(IPAddress.Any, port, _logger,
-                    _textCacheManager, _hashMapCacheManager, _setCacheManager);
+                    _textCacheManager, _hashMapCacheManager);
                  
-                _logger.LogDebug("Kongo server starting...");
+                _logger.LogInformation("Kongo server starting...");
                 _kongoServer.Start();
-                _logger.LogDebug("Kongo server started...");
+                _logger.LogInformation("Kongo server started...");
+                _logger.LogInformation($"Kongo server listening on port: {port}...");
+
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError($"Kongo server could not be started due to {ex.Message}");
                 serverRunning = false;
@@ -95,9 +95,9 @@ namespace KongoCache.Worker
         {
             try
             {
-                _logger.LogDebug("Kongo server stopping...");
+                _logger.LogInformation("Kongo server stopping...");
                 _kongoServer.Stop();
-                _logger.LogDebug("Kongo server stopped...");
+                _logger.LogInformation("Kongo server stopped...");
 
                 DisposeRequestProcessors();
             }
@@ -130,7 +130,5 @@ namespace KongoCache.Worker
             _textRequestProcessor = default;
             _hashMapRequestProcessor = default;
         }
-
-
     }
 }

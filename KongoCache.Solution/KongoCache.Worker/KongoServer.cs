@@ -11,20 +11,17 @@ namespace KongoCache.Worker
     {
         readonly ILogger<Worker> _logger;
         readonly ICacheManager<string, string> _textCacheManager;
-        readonly ICacheManager<string, Dictionary<string, string>> _hashMapCacheManager;
-        readonly ICacheManager<string, HashSet<string>> _setCacheManager;
+        readonly ICacheManager<string, Dictionary<string, string>> _hashMapCacheManager; 
 
         public KongoServer(IPAddress address, int port, ILogger<Worker> logger, 
             ICacheManager<string, string> textCacheManager,
-            ICacheManager<string, Dictionary<string, string>> hashMapCacheManager,
-            ICacheManager<string, HashSet<string>> setCacheManager) : base(address, port) {
+            ICacheManager<string, Dictionary<string, string>> hashMapCacheManager) : base(address, port) {
             _logger = logger;
             _textCacheManager = textCacheManager;
-            _hashMapCacheManager = hashMapCacheManager;
-            _setCacheManager = setCacheManager;
+            _hashMapCacheManager = hashMapCacheManager; 
         }
 
-        protected override TcpSession CreateSession() { return new KongoSession(this, _logger, _textCacheManager, _hashMapCacheManager, _setCacheManager); }
+        protected override TcpSession CreateSession() { return new KongoSession(this, _logger, _textCacheManager, _hashMapCacheManager); }
 
         protected override void OnError(SocketError error)
         { 
