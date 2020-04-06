@@ -1,19 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
-using KongoCache.Core;
+﻿using KongoCache.Core;
 using KongoCache.Core.RequestProcessor;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace KongoCache.Worker
 {
     public class Worker : BackgroundService
     {
-        private readonly ILogger<Worker> _logger; 
+        private readonly ILogger<Worker> _logger;
         private readonly IServiceScopeFactory _serviceScopeFactory;
         KongoServer _kongoServer;
         private bool serverRunning;
@@ -40,7 +40,7 @@ namespace KongoCache.Worker
             using var scope = _serviceScopeFactory.CreateScope();
 
             _textCacheManager = scope.ServiceProvider.GetRequiredService<ICacheManager<string, string>>();
-            _hashMapCacheManager = scope.ServiceProvider.GetRequiredService<ICacheManager<string, Dictionary<string, string>>>(); 
+            _hashMapCacheManager = scope.ServiceProvider.GetRequiredService<ICacheManager<string, Dictionary<string, string>>>();
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -65,17 +65,17 @@ namespace KongoCache.Worker
         void StartKongoServer()
         {
             try
-            {                 
+            {
                 serverRunning = true;
 
                 InitRequestProcessors();
 
                 int port = 65332; // make configurable
 
-                _logger.LogInformation($"Init Kongo server..."); 
+                _logger.LogInformation($"Init Kongo server...");
                 _kongoServer = new KongoServer(IPAddress.Any, port, _logger,
                     _textCacheManager, _hashMapCacheManager);
-                 
+
                 _logger.LogInformation("Kongo server starting...");
                 _kongoServer.Start();
                 _logger.LogInformation("Kongo server started...");
@@ -88,7 +88,7 @@ namespace KongoCache.Worker
                 _logger.LogError($"Kongo server could not be started due to {ex.Message}");
                 serverRunning = false;
                 DisposeRequestProcessors();
-            } 
+            }
         }
 
         void StopKongoServer()

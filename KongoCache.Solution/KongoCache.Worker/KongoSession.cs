@@ -1,7 +1,7 @@
 ﻿using KongoCache.Core;
 using KongoCache.Core.DTOs;
 using Microsoft.Extensions.Logging;
-using NetCoreServer; 
+using NetCoreServer;
 using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
@@ -11,9 +11,9 @@ namespace KongoCache.Worker
 {
     public class KongoSession : TcpSession
     {
-        readonly ILogger<Worker> _logger; 
+        readonly ILogger<Worker> _logger;
         readonly ICacheManager<string, string> _textCacheManager;
-        readonly ICacheManager<string, Dictionary<string, string>> _hashMapCacheManager; 
+        readonly ICacheManager<string, Dictionary<string, string>> _hashMapCacheManager;
 
         static readonly IDictionary<string, (CacheContentType, OpType)> opTypeContentTypeMap = new Dictionary<string, (CacheContentType, OpType)>()
         {
@@ -26,10 +26,11 @@ namespace KongoCache.Worker
             { "HGETALL", (CacheContentType.HashTable, OpType.HGETALL) },
             { "HREMKEY", (CacheContentType.HashTable, OpType.HREMOVEKEY) }
         };
-        
+
         public KongoSession(TcpServer server, ILogger<Worker> logger,
              ICacheManager<string, string> textCacheManager,
-            ICacheManager<string, Dictionary<string, string>> hashMapCacheManager) : base(server) {
+            ICacheManager<string, Dictionary<string, string>> hashMapCacheManager) : base(server)
+        {
             _logger = logger;
             _textCacheManager = textCacheManager;
             _hashMapCacheManager = hashMapCacheManager;
@@ -40,12 +41,12 @@ namespace KongoCache.Worker
 
         protected override void OnConnected()
         {
-            _logger.LogInformation($"Kongo session with Id {Id} connected!");             
+            _logger.LogInformation($"Kongo session with Id {Id} connected!");
             SendAsync($"You are connected to Kongo Server with Session Id {Id}");
         }
 
         protected override void OnDisconnected()
-        { 
+        {
             _logger.LogInformation($"Kongo session with Id {Id} disconnected!");
         }
 
@@ -60,7 +61,7 @@ namespace KongoCache.Worker
             }
 
             _logger.LogInformation($"Kongo session with Id {Id} received a message {message}");
-             
+
             try
             {
                 string[] requestContent = message.Split(" ", StringSplitOptions.RemoveEmptyEntries); // // HADD KONGOKEY HashKey HashValue
@@ -81,52 +82,75 @@ namespace KongoCache.Worker
 
                 CacheOpMetaData opMetaData = default;
 
+                _logger.LogInformation("Enter switch for opMetaData");
+
                 switch (operation.contentType)
                 {
                     case CacheContentType.Text:
+
                         opMetaData = RequestParser.ParseTextRequest(requestContent, operation.opType);
-                        _textCacheManager.EnqueueOps(opMetaData);
+                        opMetaData.ClientSessionId = Id; 
+
+                        _textCacheManager.EnqueueOps(opMetaData); 
 
                         // keep checking for replies
                         while (true)
                         {
-                            if(_textCacheManager.TryGetReply(Id, out string reply)){
-                                SendAsync(reply); 
+                            if (_textCacheManager.TryGetReply(Id, out string reply))
+                            {
+                                SendAsync(reply);
+                                break;
                             }
-                            break;
                         }
 
                         break;
 
                     case CacheContentType.HashTable:
-                        opMetaData = RequestParser.ParseTextRequest(requestContent, operation.opType);
+                        opMetaData = RequestParser.ParseHashMapRequest(requestContent, operation.opType);
+                        _logger.LogInformation("RequestParser.ParseTextRequest for opMetaData");
+
+                        opMetaData.ClientSessionId = Id;
+                        _logger.LogInformation("opMetaData.ClientSessionId  for opMetaData");
+
+
+                        if (_hashMapCacheManager is null)
+                            _logger.LogInformation("_hashMapCacheManager is null for opMetaData");
+                        else
+                            _logger.LogInformation("_hashMapCacheManager is not null for opMetaData");
+
+
                         _hashMapCacheManager.EnqueueOps(opMetaData);
+
+                        _logger.LogInformation("_textCacheManager opMetaData HASH SET ENQUED SUCCESSFULLY for opMetaData");
 
                         while (true)
                         {
                             if (_hashMapCacheManager.TryGetReply(Id, out string reply))
                             {
                                 SendAsync(reply);
+                                _logger.LogInformation("SendAsync(reply) HASH SET; for opMetaData");
+
+                                break;
+
                             }
-                            break;
                         }
 
                         break;
                 }
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError($"Kongo session with Id {Id} caught an error parsing request {ex.Message}");
-                SendAsync("Invalid operation"); 
+                SendAsync("Invalid operation");
+                Disconnect();
             }
 
-            Disconnect(); 
         }
-               
+
         protected override void OnError(SocketError error)
-        { 
+        {
             _logger.LogError($"Kongo session with Id {Id} caught an error with code {error}");
-        } 
+        }
     }
 }

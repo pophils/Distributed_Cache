@@ -10,7 +10,7 @@ namespace KongoCache.Core.Gateway
         IDictionary<K, LinkedListNode<(K, V)>> _hashTable;
         LinkedList<(K, V)> _keyList;
 
-        long _capacity = (long)Math.Pow(2, 64); // just for testing
+        long _capacity = long.MaxValue; // (long)Math.Pow(2, 64); // just for testing
         long _size = 0;
 
         public LRUDatabase(){} 
@@ -42,6 +42,7 @@ namespace KongoCache.Core.Gateway
             
             if (_hashTable.ContainsKey(kongokey))
             {
+                Console.WriteLine("kongokey exist in LRU");
                 _keyList.Remove(_hashTable[kongokey]);
                 _hashTable.Remove(kongokey);
             }             

@@ -24,8 +24,8 @@ namespace KongoCache.Worker
                     services.AddSingleton<ICacheManager<string, LinkedList<string>>, CacheManager<string, LinkedList<string>>>();
 
                     // Transient caause we want to maintain min and max heap
-                    services.AddTransient<ICacheManager<string, BinaryHeap< (int score, string value)>>, CacheManager<string, BinaryHeap<(int score, string value)>>>();
-             
+                    services.AddTransient<ICacheManager<string, BinaryHeap<(int score, string value)>>, CacheManager<string, BinaryHeap<(int score, string value)>>>();
+
 
                     services.AddHostedService<Worker>();
                 });

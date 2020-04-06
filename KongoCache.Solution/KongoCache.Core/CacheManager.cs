@@ -10,7 +10,7 @@ namespace KongoCache.Core
     public class CacheManager<K, V> : ICacheManager<K, V>
     {
         ConcurrentQueue<CacheOpMetaData> _opsQueue;
-        ILRUDatabase<K, V> _database;
+        LRUDatabase<K, V> _database;
         Queue<CacheOpMetaData> _completedOpsQueue;
         IDictionary<Guid, LinkedList<string>> replyMap;
 
@@ -19,25 +19,34 @@ namespace KongoCache.Core
             if (replyMap is null)
                 replyMap = new Dictionary<Guid, LinkedList<string>>();
 
-            if (replyMap[clientSessionId] is null)
+            if (!replyMap.ContainsKey(clientSessionId))
                 replyMap[clientSessionId] = new LinkedList<string>();
 
             replyMap[clientSessionId].AddLast(replyContent); 
         }
 
         public bool TryGetReply(Guid clientSessionId, out string reply)
-        {
+        { 
             reply = default;
 
             if (replyMap is null)
                 return false;
 
-            if (replyMap.TryGetValue(clientSessionId, out LinkedList<string> replies))
+            try
             {
-                reply = replies.First.Value;
-                replies.RemoveFirst(); 
-                return true;
+                if (replyMap != null && replyMap.TryGetValue(clientSessionId, out LinkedList<string> replies))
+                {
+                    if (replies != null && replies.First != null)
+                    {
+                        reply = replies.First?.Value;
+                        replies.RemoveFirst();
+                        return true;
+                    }
+                }
             }
+            catch // in case of any race condition
+            {}
+      
 
             return false;
         }
@@ -47,10 +56,17 @@ namespace KongoCache.Core
             if (replyMap is null)
                 return false;
 
-            if (replyMap.TryGetValue(clientSessionId, out LinkedList<string> replies))
+            try
             {
-                return replies.Count == 0;
+                if (replyMap.TryGetValue(clientSessionId, out LinkedList<string> replies))
+                {
+                    return replies != null && replies.Count == 0;
+                }
+
             }
+            catch { }
+
+
 
             return true;
         }
@@ -58,7 +74,7 @@ namespace KongoCache.Core
         public void EnqueueOps(CacheOpMetaData op)
         {
             if (_opsQueue is null)
-                _opsQueue = new ConcurrentQueue<CacheOpMetaData>();
+                _opsQueue = new ConcurrentQueue<CacheOpMetaData>();             
 
             _opsQueue.Enqueue(op);
         }
@@ -100,7 +116,14 @@ namespace KongoCache.Core
         public ILRUDatabase<K, V> LRUDatabase()
         {
             if (_database is null)
+            {
+                Console.WriteLine("_database is null");
                 _database = new LRUDatabase<K, V>();
+            }
+            else
+            {
+                Console.WriteLine("_database is not null");
+            }
 
             return _database;
         }

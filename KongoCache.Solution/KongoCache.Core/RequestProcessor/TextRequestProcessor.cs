@@ -32,12 +32,16 @@ namespace KongoCache.Core.RequestProcessor
                                 {
                                     _textCacheManager.AddReply(OpsResponseCode.MEMORYOVERFLOW + Appconstants.RESPONSE_SEPERATOR + OpType.ADD, textOpMetadata.ClientSessionId);
                                 }
+                                catch(Exception ex)
+                                {
+                                    Console.WriteLine("AddReply exc: " + ex.Message);
+                                }
 
                                 break;
 
                             case OpType.GET:
                                 _textCacheManager.AddReply(OpsResponseCode.SUCCESS + Appconstants.RESPONSE_SEPERATOR + OpType.GET
-                                    + _textCacheManager.LRUDatabase().Get(textOpMetadata.KongoKey),
+                                    + Appconstants.RESPONSE_SEPERATOR + _textCacheManager.LRUDatabase().Get(textOpMetadata.KongoKey),
                                     textOpMetadata.ClientSessionId);
                                 break;
 
