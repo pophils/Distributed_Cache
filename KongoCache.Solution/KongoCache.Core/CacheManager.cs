@@ -2,17 +2,19 @@
 using KongoCache.Core.Gateway;
 using KongoCache.Core.Interface;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading.Tasks.Dataflow;
 
 namespace KongoCache.Core
 {
     public class CacheManager<K, V> : ICacheManager<K, V>
     {
-        ConcurrentQueue<CacheOpMetaData> _opsQueue;
+        //ConcurrentQueue<CacheOpMetaData> _opsQueue;
         LRUDatabase<K, V> _database;
         Queue<CacheOpMetaData> _completedOpsQueue;
         IDictionary<Guid, LinkedList<string>> replyMap;
+
+        public ActionBlock<CacheOpMetaData> RequestProcessorBlock { get; set; }
 
         public void AddReply(string replyContent, Guid clientSessionId)
         {
@@ -71,26 +73,26 @@ namespace KongoCache.Core
             return true;
         }
 
-        public void EnqueueOps(CacheOpMetaData op)
-        {
-            if (_opsQueue is null)
-                _opsQueue = new ConcurrentQueue<CacheOpMetaData>();             
+        //public void EnqueueOps(CacheOpMetaData op)
+        //{
+        //    if (_opsQueue is null)
+        //        _opsQueue = new ConcurrentQueue<CacheOpMetaData>();             
 
-            _opsQueue.Enqueue(op);
-        }
+        //    _opsQueue.Enqueue(op);
+        //}
 
-        public CacheOpMetaData DequeueOps()
-        {
-            if (_opsQueue != null && !_opsQueue.IsEmpty)
-            {
-                if (_opsQueue.TryDequeue(out CacheOpMetaData op))
-                {
-                    return op;
-                }
-            }
+        //public CacheOpMetaData DequeueOps()
+        //{
+        //    if (_opsQueue != null && !_opsQueue.IsEmpty)
+        //    {
+        //        if (_opsQueue.TryDequeue(out CacheOpMetaData op))
+        //        {
+        //            return op;
+        //        }
+        //    }
 
-            return default;
-        }
+        //    return default;
+        //}
 
         public void EnqueueCompletedOps(CacheOpMetaData op)
         {
@@ -113,19 +115,15 @@ namespace KongoCache.Core
             return default;
         }
 
-        public ILRUDatabase<K, V> LRUDatabase()
+        public ILRUDatabase<K, V> LRUDatabase
         {
-            if (_database is null)
+            get
             {
-                Console.WriteLine("_database is null");
-                _database = new LRUDatabase<K, V>();
-            }
-            else
-            {
-                Console.WriteLine("_database is not null");
-            }
+                if (_database is null)
+                    _database = new LRUDatabase<K, V>(); 
 
-            return _database;
+                return _database;
+            }              
         }
     }
 }
