@@ -124,7 +124,8 @@ namespace KongoCache.Worker
 
         void DisposeRequestProcessors()
         {
-            
+            //_textRequestProcessor?.Dispose();
+            //_hashMapRequestProcessor?.Dispose();
 
             _textRequestProcessor = default;
             _hashMapRequestProcessor = default;

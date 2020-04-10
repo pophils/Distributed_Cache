@@ -65,7 +65,7 @@ namespace KongoCache.Worker
 
             if (string.IsNullOrEmpty(message))
             {
-                SendAsync(OpsResponseCode.INVALID_OPS); 
+                Send(OpsResponseCode.INVALID_OPS); 
             }
 
             _logger.LogInformation($"Kongo session with Id {Id} received a message {message}");
@@ -76,14 +76,14 @@ namespace KongoCache.Worker
 
                 if (requestContent.Length < 2) // at least optype kongo key
                 {
-                    SendAsync(OpsResponseCode.INVALID_OPS); 
+                    Send(OpsResponseCode.INVALID_OPS); 
                 }
 
                 string opType = requestContent[0].ToUpper();
 
                 if (!opTypeContentTypeMap.TryGetValue(opType, out (CacheContentType contentType, OpType opType) operation))
                 {
-                    SendAsync(OpsResponseCode.INVALID_OPS); 
+                    Send(OpsResponseCode.INVALID_OPS); 
                 }
 
                 CacheOpMetaData opMetaData = default;                 
@@ -93,8 +93,7 @@ namespace KongoCache.Worker
                     case CacheContentType.Text:
 
                         opMetaData = RequestParser.ParseTextRequest(requestContent, operation.opType);
-                        opMetaData.ClientSessionId = Id;
-                        Thread.Sleep(10000);
+                        opMetaData.ClientSessionId = Id; 
                         _textCacheManager.RequestProcessorBlock.Post(opMetaData);
 
                         break;
@@ -111,7 +110,7 @@ namespace KongoCache.Worker
             catch (Exception ex)
             {
                 _logger.LogError($"Kongo session with Id {Id} caught an error parsing request {ex.Message}");
-                SendAsync(OpsResponseCode.INVALID_OPS); 
+                Send(OpsResponseCode.INVALID_OPS); 
             }
 
         }
@@ -148,7 +147,7 @@ namespace KongoCache.Worker
 
                 if (_textCacheManager.TryGetReply(Id, out string reply))
                 {
-                    SendAsync(reply);
+                    Send(reply);
                     _logger.LogInformation($"Text Reply sent");
                 }
             }
@@ -163,7 +162,7 @@ namespace KongoCache.Worker
 
                 if (_hashMapCacheManager.TryGetReply(Id, out string reply))
                 {
-                    SendAsync(reply);
+                    Send(reply);
 
                     _logger.LogInformation($"Hash Reply sent");
 

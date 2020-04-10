@@ -8,7 +8,7 @@ using System.Threading.Tasks.Dataflow;
 namespace KongoCache.Core.RequestProcessor
 { 
     public class HashTableRequestProcessor
-    { 
+    {  
 
         public void InitRequestProcessor(ICacheManager<string, Dictionary<string, string>> cacheManager)
         { 
@@ -116,11 +116,11 @@ namespace KongoCache.Core.RequestProcessor
                                 break;
                         }
                     }
-                }, new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism =  Environment.ProcessorCount });
- 
+                },
+                new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism =  Environment.ProcessorCount });
+                 
         }
            
-
-     
+         
     }
 }
