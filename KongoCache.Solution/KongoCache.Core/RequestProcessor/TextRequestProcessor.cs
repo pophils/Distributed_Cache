@@ -5,10 +5,8 @@ using System.Threading.Tasks.Dataflow;
 
 namespace KongoCache.Core.RequestProcessor
 {
-    public class TextRequestProcessor : IDisposable
-    {
-        Task textProcessorTask;
-        CacheOpMetaData textOpMetadata;
+    public class TextRequestProcessor
+    { 
 
         public void InitRequestProcessor(ICacheManager<string, string> _textCacheManager)
         {
@@ -99,11 +97,6 @@ namespace KongoCache.Core.RequestProcessor
             //    }
             //});
         }
-
-
-        public void Dispose()
-        {
-            textProcessorTask?.Dispose();
-        }
+ 
     }
 }
