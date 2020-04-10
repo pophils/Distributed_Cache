@@ -48,7 +48,7 @@ namespace KongoCache.Core.RequestProcessor
                             break;
                     }
                 }
-            }, new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = Environment.ProcessorCount });
+            }, new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = Environment.ProcessorCount, SingleProducerConstrained = true });
 
 
 
