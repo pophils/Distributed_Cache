@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using NetCoreServer;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -49,7 +50,9 @@ namespace KongoCache.Worker
         protected override void OnConnected()
         {
             _logger.LogInformation($"Kongo session with Id {Id} connected!");
-            SendAsync($"You are connected to Kongo Server with Session Id {Id}");
+            Send($"You are connected to Kongo Server with Session Id {Id}");
+
+            s = new Stopwatch();
         }
 
         protected override void OnDisconnected()
@@ -58,21 +61,26 @@ namespace KongoCache.Worker
             repliesSenderCancellationTokenSource.Cancel();
             DisposeRepliesSenderTasks();
         }
-       
+
+        Stopwatch s;
+
         protected override void OnReceived(byte[] buffer, long offset, long size)
         {
+            s.Start();
+
             string message = Encoding.UTF8.GetString(buffer, (int)offset, (int)size);
 
             if (string.IsNullOrEmpty(message))
             {
-                Send(OpsResponseCode.INVALID_OPS); 
+                Send(OpsResponseCode.INVALID_OPS);
+                return;
             }
 
             _logger.LogInformation($"Kongo session with Id {Id} received a message {message}");
 
             try
             {
-                string[] requestContent = message.Split(" ", StringSplitOptions.RemoveEmptyEntries); // // HADD KONGOKEY HashKey HashValue
+                string[] requestContent = message.Split(" ", StringSplitOptions.None); // // HADD KONGOKEY HashKey HashValue
 
                 if (requestContent.Length < 2) // at least optype kongo key
                 {
@@ -148,6 +156,9 @@ namespace KongoCache.Worker
                 if (_textCacheManager.TryGetReply(Id, out string reply))
                 {
                     Send(reply);
+                    s.Stop();
+                    _logger.LogInformation($"{s.ElapsedMilliseconds} milli sec");
+
                     _logger.LogInformation($"Text Reply sent");
                 }
             }
@@ -163,6 +174,8 @@ namespace KongoCache.Worker
                 if (_hashMapCacheManager.TryGetReply(Id, out string reply))
                 {
                     Send(reply);
+                    s.Stop();
+                    _logger.LogInformation($"{s.ElapsedMilliseconds} milli sec");
 
                     _logger.LogInformation($"Hash Reply sent");
 
