@@ -3,15 +3,16 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>dotnet-KongoCache.Worker-5A1B90EF-B982-42A3-B215-8339766016DE</UserSecretsId>
+    <LangVersion>8</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.1" />
-    <PackageReference Include="NetCoreServer" Version="3.0.10" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\KongoCache.Core\KongoCache.Core.csproj" />
+    <ProjectReference Include="..\NetCoreServer\NetCoreServer.csproj" />
   </ItemGroup>
 </Project>

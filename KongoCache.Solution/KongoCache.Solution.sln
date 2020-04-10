@@ -4,9 +4,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KongoCache.Core", "KongoCache.Core\KongoCache.Core.csproj", "{9438B63D-1C47-415D-A595-C2333234FFE5}"
-EndProject 
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KongoCache.Worker", "KongoCache.Worker\KongoCache.Worker.csproj", "{542084CF-7192-4A3C-AB46-830BEDA0CE16}"
-EndProject  
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KongoCache.TesterConsole", "KongoCache.TesterConsole\KongoCache.TesterConsole.csproj", "{BEB16502-C549-408D-A574-D8ABA0B60E1C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KongoCache.Client", "KongoCache.Client\KongoCache.Client.csproj", "{AE945AF0-60BE-4CF9-BD0D-8F5935899352}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetCoreServer", "NetCoreServer\NetCoreServer.csproj", "{E43968C8-3C4C-4817-B7A1-0D07A563C33F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,10 +23,6 @@ Global
 		{9438B63D-1C47-415D-A595-C2333234FFE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9438B63D-1C47-415D-A595-C2333234FFE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9438B63D-1C47-415D-A595-C2333234FFE5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4C4B0586-B607-45D2-9A94-76C3E3D0F75D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4C4B0586-B607-45D2-9A94-76C3E3D0F75D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4C4B0586-B607-45D2-9A94-76C3E3D0F75D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4C4B0586-B607-45D2-9A94-76C3E3D0F75D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{542084CF-7192-4A3C-AB46-830BEDA0CE16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{542084CF-7192-4A3C-AB46-830BEDA0CE16}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{542084CF-7192-4A3C-AB46-830BEDA0CE16}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -33,6 +35,10 @@ Global
 		{AE945AF0-60BE-4CF9-BD0D-8F5935899352}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE945AF0-60BE-4CF9-BD0D-8F5935899352}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AE945AF0-60BE-4CF9-BD0D-8F5935899352}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E43968C8-3C4C-4817-B7A1-0D07A563C33F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E43968C8-3C4C-4817-B7A1-0D07A563C33F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E43968C8-3C4C-4817-B7A1-0D07A563C33F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E43968C8-3C4C-4817-B7A1-0D07A563C33F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
