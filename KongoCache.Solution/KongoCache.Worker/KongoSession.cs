@@ -76,7 +76,7 @@ namespace KongoCache.Worker
                 return;
             }
 
-            _logger.LogInformation($"Kongo session with Id {Id} received a message {message}");
+           // _logger.LogInformation($"Kongo session with Id {Id} received a message {message}");
 
             try
             {
@@ -120,8 +120,11 @@ namespace KongoCache.Worker
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Kongo session with Id {Id} caught an error parsing request {ex.Message}");
-                Send(OpsResponseCode.INVALID_OPS); 
+               // _logger.LogError($"Kongo session with Id {Id} caught an error parsing request {ex.Message}");
+                Send(OpsResponseCode.INVALID_OPS);
+                s.Stop();
+                _logger.LogInformation($"{s.ElapsedMilliseconds} milli sec");
+
             }
 
         }
@@ -162,7 +165,7 @@ namespace KongoCache.Worker
                     s.Stop();
                     _logger.LogInformation($"{s.ElapsedMilliseconds} milli sec");
 
-                    _logger.LogInformation($"Text Reply sent");
+                   // _logger.LogInformation($"Text Reply sent");
                 }
             }
         }
@@ -180,7 +183,7 @@ namespace KongoCache.Worker
                     s.Stop();
                     _logger.LogInformation($"{s.ElapsedMilliseconds} milli sec");
 
-                    _logger.LogInformation($"Hash Reply sent");
+                  //  _logger.LogInformation($"Hash Reply sent");
 
                 }
             }

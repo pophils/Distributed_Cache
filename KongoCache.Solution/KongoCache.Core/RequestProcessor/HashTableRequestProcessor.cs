@@ -34,7 +34,7 @@ namespace KongoCache.Core.RequestProcessor
                                     cacheManager.AddReply(OpsResponseCode.SUCCESS + Appconstants.RESPONSE_SEPERATOR + OpType.HADD + Appconstants.RESPONSE_SEPERATOR +
                                         _hashTable.Keys.Count, opMetadata.ClientSessionId);
 
-                                    cacheManager.EnqueueCompletedOps(opMetadata);
+                                   // cacheManager.EnqueueCompletedOps(opMetadata);
                                 }
                                 catch (OutOfMemoryException)
                                 {
@@ -47,16 +47,13 @@ namespace KongoCache.Core.RequestProcessor
                                 _hashTable = cacheManager.LRUDatabase.Get(opMetadata.KongoKey); 
 
                                 if (_hashTable != null && _hashTable.ContainsKey(opMetadata.HashKey))
-                                {
-                                    Console.WriteLine("_hashTable contains key");
+                                {                                  
 
                                     cacheManager.AddReply(OpsResponseCode.SUCCESS + Appconstants.RESPONSE_SEPERATOR + OpType.HGET +
                                         _hashTable[opMetadata.HashKey], opMetadata.ClientSessionId);
                                 }
                                 else
-                                {
-                                    Console.WriteLine("_hashTable contains no key");
-
+                                { 
                                     cacheManager.AddReply(OpsResponseCode.SUCCESS + Appconstants.RESPONSE_SEPERATOR + OpType.HGET, opMetadata.ClientSessionId);
                                 }
 
@@ -93,7 +90,7 @@ namespace KongoCache.Core.RequestProcessor
                                 cacheManager.LRUDatabase.Remove(opMetadata.KongoKey);
                                 cacheManager.AddReply(OpsResponseCode.SUCCESS + Appconstants.RESPONSE_SEPERATOR + OpType.HREMOVE,
                                        opMetadata.ClientSessionId);
-                                cacheManager.EnqueueCompletedOps(opMetadata);
+                              //  cacheManager.EnqueueCompletedOps(opMetadata);
                                 break;
 
                             case OpType.HREMOVEKEY:
