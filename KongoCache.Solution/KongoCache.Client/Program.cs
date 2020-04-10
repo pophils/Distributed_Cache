@@ -8,11 +8,15 @@ namespace KongoCache.Client
         {
             // TCP server address
             string address = "127.0.0.1";
+           // string address = "40.78.90.204";
+
             if (args.Length > 0)
                 address = args[0];
 
             // TCP server port
             int port = 65332;
+            //int port = 6359;
+
             if (args.Length > 1)
                 port = int.Parse(args[1]);
 

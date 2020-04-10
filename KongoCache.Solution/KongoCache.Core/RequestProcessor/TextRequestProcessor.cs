@@ -7,8 +7,7 @@ namespace KongoCache.Core.RequestProcessor
 {
     public class TextRequestProcessor : IDisposable
     {
-        Task textProcessorTask;
-        CacheOpMetaData textOpMetadata;
+       // readonly Task textProcessorTask; 
 
         public void InitRequestProcessor(ICacheManager<string, string> _textCacheManager)
         {
@@ -103,7 +102,7 @@ namespace KongoCache.Core.RequestProcessor
 
         public void Dispose()
         {
-            textProcessorTask?.Dispose();
+           // textProcessorTask?.Dispose();
         }
     }
 }
