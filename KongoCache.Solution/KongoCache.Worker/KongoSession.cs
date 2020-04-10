@@ -84,7 +84,10 @@ namespace KongoCache.Worker
 
                 if (requestContent.Length < 2) // at least optype kongo key
                 {
-                    Send(OpsResponseCode.INVALID_OPS); 
+                    Send(OpsResponseCode.INVALID_OPS);
+                    s.Stop();
+                    _logger.LogInformation($"{s.ElapsedMilliseconds} milli sec");
+                    return;
                 }
 
                 string opType = requestContent[0].ToUpper();
