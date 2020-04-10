@@ -66,7 +66,7 @@ namespace KongoCache.Worker
 
         protected override void OnReceived(byte[] buffer, long offset, long size)
         {
-            s.Start();
+            s.Restart();
 
             string message = Encoding.UTF8.GetString(buffer, (int)offset, (int)size);
 
