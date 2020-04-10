@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -514,13 +515,16 @@ namespace NetCoreServer
 
         #endregion
 
+
+        Stopwatch sd = new Stopwatch();
         #region IO processing
 
         /// <summary>
         /// This method is called whenever a receive or send operation is completed on a socket
         /// </summary>
         private void OnAsyncCompleted(object sender, SocketAsyncEventArgs e)
-        { 
+        {
+            sd.Restart();
 
             // Determine which type of operation just completed and call the associated handler
             switch (e.LastOperation)
@@ -528,13 +532,20 @@ namespace NetCoreServer
                 case SocketAsyncOperation.Receive:
                     if (ProcessReceive(e, false))
                         TryReceive();
+
+                    Console.WriteLine("Time to receive request: " + sd.ElapsedMilliseconds + "mill sec"); 
+
+
                     break;
                 case SocketAsyncOperation.Send:
                     if (ProcessSend(e))
                         TrySend();
+                    Console.WriteLine("Time to send request: " + sd.ElapsedMilliseconds + "mill sec");
+
                     break;
                 default:
                     throw new ArgumentException("The last operation completed on the socket was not a receive or send");
+
             }
 
         }
