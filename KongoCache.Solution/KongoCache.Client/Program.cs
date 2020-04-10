@@ -54,7 +54,7 @@ namespace KongoCache.Client
                 Console.WriteLine("Command: " + line);
                 
                 // Send the entered text to the chat server
-                client.SendAsync(line);
+                client.Send(line);
             }
 
             // Disconnect the client
