@@ -161,8 +161,7 @@ namespace NetCoreServer
                 OnEmpty();
 
             // Try to receive something from the client
-            
-            Console.WriteLine("Connect() Line 165 called");
+             
             TryReceive();
             
         }
@@ -346,10 +345,7 @@ namespace NetCoreServer
         /// <param name="buffer">Buffer to receive</param>
         /// <returns>Size of received data</returns>
         public virtual long Receive(byte[] buffer) {
-
-            Console.WriteLine("Virtuual Receive(byte[] buffer) Line 347 called");
-
-
+             
             return Receive(buffer, 0, buffer.Length); }
 
         /// <summary>
@@ -360,8 +356,7 @@ namespace NetCoreServer
         /// <param name="size">Buffer size</param>
         /// <returns>Size of received data</returns>
         public virtual long Receive(byte[] buffer, long offset, long size)
-        {
-            Console.WriteLine("Receive(byte[] buffer, long offset, long size) Line 356 called");
+        { 
             if (!IsConnected)
                 return 0;
 
@@ -406,8 +401,7 @@ namespace NetCoreServer
         /// Receive data from the client (asynchronous)
         /// </summary>
         public virtual void ReceiveAsync()
-        {
-            Console.WriteLine("ReceiveAsync() Line 407 called");
+        { 
 
             // Try to receive data from the client
             TryReceive();
@@ -431,16 +425,12 @@ namespace NetCoreServer
                 process = false;
 
                 try
-                {
-                    Console.WriteLine("TryReceive() Line 430 called");
-
+                { 
                     // Async receive with the receive handler
                     _receiving = true;
                     _receiveEventArg.SetBuffer(_receiveBuffer.Data, 0, (int)_receiveBuffer.Capacity);
                     if (!Socket.ReceiveAsync(_receiveEventArg))
-                        process = ProcessReceive(_receiveEventArg, false);
-
-                    Console.WriteLine("Done processing received event: " + process);
+                        process = ProcessReceive(_receiveEventArg, false); 
                 }
                 catch (ObjectDisposedException) {}
             }
@@ -530,8 +520,7 @@ namespace NetCoreServer
         /// This method is called whenever a receive or send operation is completed on a socket
         /// </summary>
         private void OnAsyncCompleted(object sender, SocketAsyncEventArgs e)
-        {
-            Console.WriteLine("OnAsyncCompleted() Line 534 called");
+        { 
 
             // Determine which type of operation just completed and call the associated handler
             switch (e.LastOperation)
