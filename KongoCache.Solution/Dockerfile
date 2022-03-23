@@ -20,7 +20,7 @@ RUN dotnet build
 
 FROM build AS test
 RUN dotnet test 
-
+RUN ls
 FROM build AS publish
 RUN dotnet publish ./KongoCache.Worker/KongoCache.Worker.csproj -c Release -o /publish
 RUN export s=1
