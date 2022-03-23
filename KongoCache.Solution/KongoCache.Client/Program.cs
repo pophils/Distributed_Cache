@@ -62,6 +62,7 @@ namespace KongoCache.Client
             Console.Write("Client disconnecting...");
             client.DisconnectAndStop();
             Console.WriteLine("Done!");
+            Console.WriteLine("Done!123");
         }
     }
 }
