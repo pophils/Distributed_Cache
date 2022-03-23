@@ -60,6 +60,7 @@ namespace KongoCache.Client
             // Disconnect the client
             Console.Write("Client disconnecting...");
             client.DisconnectAndStop();
+            
             Console.WriteLine("Done!");
         }
     }
