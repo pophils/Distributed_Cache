@@ -10,6 +10,9 @@ namespace KongoCache.Client
             // TCP server address
             string address = "127.0.0.1";
             address = "40.78.90.204";
+            
+            
+            
 
             if (args.Length > 0)
                 address = args[0];
