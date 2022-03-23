@@ -13,6 +13,9 @@ namespace KongoCache.Client
 
             if (args.Length > 0)
                 address = args[0];
+            
+            
+            
 
             // TCP server port
             int port = 65332;
