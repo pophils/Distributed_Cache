@@ -6,6 +6,7 @@ namespace KongoCache.Client
     { 
         static void Main(string[] args)
         {
+            Console.WriteLine("Testing Rebase");
             // TCP server address
             string address = "127.0.0.1";
             address = "40.78.90.204";
